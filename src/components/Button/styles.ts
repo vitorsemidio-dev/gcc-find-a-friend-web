@@ -19,4 +19,10 @@ export const Container = styled.button`
   :hover {
     filter: brightness(0.9);
   }
+
+  :disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 `

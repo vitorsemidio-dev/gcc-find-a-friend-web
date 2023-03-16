@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import logo from '@/assets/icons/logo.svg'
 import searchIcon from '@/assets/icons/search.svg'
@@ -48,8 +49,14 @@ export function Home() {
   const [states, setStates] = useState<ISelectOptions[]>([])
   const [citys, setCitys] = useState<ISelectOptions[]>([])
 
+  const navigate = useNavigate()
+
   function handleSearchPets() {
-    // TO DO
+    const queryParams = new URLSearchParams({
+      state,
+      city,
+    })
+    navigate(`/map?${queryParams.toString()}`)
   }
 
   async function handleChangeState(e: any) {
@@ -112,7 +119,7 @@ export function Home() {
               options={citys}
               onChange={handleChangeCity}
             ></Select>
-            <Button onClick={handleSearchPets}>
+            <Button onClick={handleSearchPets} disabled={!state || !city}>
               <img src={searchIcon} alt="" />
             </Button>
           </AsideRight>
