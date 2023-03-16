@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import logo from '@/assets/icons/logo.svg'
 import searchIcon from '@/assets/icons/search.svg'
 import dogHero from '@/assets/images/dog-hero.png'
 import { Button } from '@/components/Button'
 import { Select } from '@/components/Select'
+import { api } from '@/services/http'
 
 import {
   AsideRight,
@@ -18,73 +19,69 @@ import {
   Wrapper,
 } from './styles'
 
-const STATES = [
-  {
-    id: 11,
-    sigla: 'RO',
-    nome: 'Rondônia',
-    regiao: {
-      id: 1,
-      sigla: 'N',
-      nome: 'Norte',
-    },
-  },
-  {
-    id: 12,
-    sigla: 'AC',
-    nome: 'Acre',
-    regiao: {
-      id: 1,
-      sigla: 'N',
-      nome: 'Norte',
-    },
-  },
-]
-
-const CITIES = [
-  {
-    name: 'Alta Floresta D Oeste',
-    code: '1100015',
-  },
-  {
-    name: 'Ariquemes',
-    code: '1100023',
-  },
-  {
-    name: 'Cabixi',
-    code: '1100031',
-  },
-  {
-    name: 'Cacoal',
-    code: '1100049',
-  },
-]
-
-interface SelectOptions {
+interface ISelectOptions {
   value: string | number
   label: string
+}
+
+interface IState {
+  nome: string
+  sigla: string
+}
+
+interface ICity {
+  name: string
+  code: string
+}
+
+interface IResponseState {
+  states: IState[]
+}
+
+interface IResponseCity {
+  citys: ICity[]
 }
 
 export function Home() {
   const [state, setState] = useState('')
   const [city, setCity] = useState('')
-  const [states, setStates] = useState<SelectOptions[]>(() => {
-    return STATES.map((state) => ({ value: state.sigla, label: state.sigla }))
-  })
-  const [cities, setCities] = useState<SelectOptions[]>(() => {
-    return CITIES.map((city) => ({ value: city.code, label: city.name }))
-  })
+  const [states, setStates] = useState<ISelectOptions[]>([])
+  const [citys, setCitys] = useState<ISelectOptions[]>([])
+
   function handleSearchPets() {
     // TO DO
   }
 
-  function handleChangeState() {
-    // TO DO
+  async function handleChangeState(e: any) {
+    const newState = e.target.value
+    setState(newState)
+    const { data } = await api.get<IResponseCity>(`/location/citys/${newState}`)
+    const dataMapped = data.citys
+      .map((city) => ({
+        label: city.name,
+        value: city.code,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label))
+    setCitys(dataMapped)
   }
 
-  function handleChangeCity() {
-    // TO DO
+  function handleChangeCity(e: any) {
+    setCity(e.target.value)
   }
+
+  useEffect(() => {
+    const loadStates = async () => {
+      const { data } = await api.get<IResponseState>('/location/states')
+      const dataMapped = data.states
+        .map((state) => ({
+          label: state.sigla,
+          value: state.sigla,
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label))
+      setStates(dataMapped)
+    }
+    loadStates()
+  }, [])
 
   return (
     <Container>
@@ -103,8 +100,18 @@ export function Home() {
           </Text>
           <AsideRight>
             <Text size="small">Busque um amigo:</Text>
-            <Select name="UF" label="" options={states}></Select>
-            <Select name="Cidade" label="" options={cities}></Select>
+            <Select
+              name="UF"
+              label=""
+              options={states}
+              onChange={handleChangeState}
+            ></Select>
+            <Select
+              name="Cidade"
+              label=""
+              options={citys}
+              onChange={handleChangeCity}
+            ></Select>
             <Button onClick={handleSearchPets}>
               <img src={searchIcon} alt="" />
             </Button>

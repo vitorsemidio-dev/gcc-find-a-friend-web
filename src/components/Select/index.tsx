@@ -1,5 +1,6 @@
 import chevron from '@/assets/icons/chevron-bottom.svg'
-import { ComponentProps } from 'react'
+import { ChangeEvent, ComponentProps } from 'react'
+
 import {
   Filter,
   FilterLabel,
@@ -15,14 +16,15 @@ type SelectProps = ComponentProps<typeof FilterInput> & {
     value: string | number
     label: string
   }[]
+  onChange?: (event: ChangeEvent<HTMLSelectElement>) => void
 }
 
-export function Select({ label, name, options }: SelectProps) {
+export function Select({ label, name, options, onChange }: SelectProps) {
   return (
     <Filter>
       <FilterLabel htmlFor={name}>{label}</FilterLabel>
       <FilterWrapper>
-        <FilterInput name={name} id={name}>
+        <FilterInput name={name} id={name} onChange={onChange}>
           <FilterInputOption value="" disabled selected>
             Selecione
           </FilterInputOption>
