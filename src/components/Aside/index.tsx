@@ -1,15 +1,17 @@
-import { Select } from '@/components/Select'
+import { useState } from 'react'
 
 import logo from '@/assets/icons/logo.svg'
 import search from '@/assets/icons/search.svg'
+import { Button } from '~/Button'
+import { Select } from '~/Select'
 
 import {
-  Container,
-  AsideHeader,
-  HeaderInput,
   AsideContent,
-  ContentHeader,
+  AsideHeader,
+  Container,
   ContentFilters,
+  ContentHeader,
+  HeaderInput,
 } from './styles'
 
 const ageOptions = [
@@ -62,7 +64,8 @@ const sizeOptions = [
     value: 'big',
   },
 ]
-const independencyOptions = [
+
+const independenceOptions = [
   {
     label: 'Baixo',
     value: 'low',
@@ -77,13 +80,36 @@ const independencyOptions = [
   },
 ]
 
-export function Aside() {
+type SearchFilters = {
+  age: string
+  city: string
+  energy: string
+  size: string
+  independence: string
+}
+
+interface AsideProps {
+  onSearchPets: (searchFilters: SearchFilters) => void
+}
+
+export function Aside({ onSearchPets }: AsideProps) {
+  const [searchFilters, setSearchFilters] = useState({
+    age: '',
+    city: '',
+    energy: '',
+    size: '',
+    independence: '',
+  })
+
   function handleSearchPets() {
-    // TO DO
+    onSearchPets(searchFilters)
   }
 
-  function handleChangeSearchFilters() {
-    // TO DO
+  function handleChangeSearchFilters(
+    field: keyof typeof searchFilters,
+    value: string,
+  ) {
+    setSearchFilters({ ...searchFilters, [field]: value })
   }
 
   return (
@@ -92,30 +118,52 @@ export function Aside() {
         <div>
           <img src={logo} alt="" />
           <HeaderInput>
-            <input type="text" placeholder="Insira uma cidade" />
-            <button>
+            <input
+              type="text"
+              placeholder="Insira uma cidade"
+              onChange={(e) =>
+                handleChangeSearchFilters('city', e.target.value)
+              }
+            />
+            <Button onClick={handleSearchPets} disabled={!searchFilters.city}>
               <img src={search} alt="ícone de lupa" />
-            </button>
+            </Button>
           </HeaderInput>
         </div>
       </AsideHeader>
       <AsideContent>
         <ContentHeader>Filtros</ContentHeader>
         <ContentFilters>
-          <Select name="age" label="Idade" options={ageOptions} />
+          <Select
+            name="age"
+            label="Idade"
+            options={ageOptions}
+            onChange={(e) => handleChangeSearchFilters('age', e.target.value)}
+          />
 
           <Select
             name="energy"
             label="Nível de energia"
             options={energyOptions}
+            onChange={(e) =>
+              handleChangeSearchFilters('energy', e.target.value)
+            }
           />
 
-          <Select name="size" label="Porte do animal" options={sizeOptions} />
+          <Select
+            name="size"
+            label="Porte do animal"
+            options={sizeOptions}
+            onChange={(e) => handleChangeSearchFilters('size', e.target.value)}
+          />
 
           <Select
-            name="independency"
+            name="independence"
             label="Nível de independência"
-            options={independencyOptions}
+            options={independenceOptions}
+            onChange={(e) =>
+              handleChangeSearchFilters('independence', e.target.value)
+            }
           />
         </ContentFilters>
       </AsideContent>

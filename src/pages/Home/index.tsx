@@ -66,7 +66,7 @@ export function Home() {
     const dataMapped = data.citys
       .map((city) => ({
         label: city.name,
-        value: city.code,
+        value: city.name,
       }))
       .sort((a, b) => a.label.localeCompare(b.label))
     setCitys(dataMapped)

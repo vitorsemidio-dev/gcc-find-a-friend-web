@@ -17,6 +17,8 @@ export const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
   margin-bottom: 46px;
 
   p {
@@ -58,6 +60,6 @@ export const HeaderSelect = styled.select`
 
 export const Display = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   grid-gap: 32px;
 `
