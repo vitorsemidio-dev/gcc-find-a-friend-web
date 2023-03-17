@@ -1,5 +1,14 @@
 import { createGlobalStyle } from 'styled-components'
 
+export const theme = {
+  colors: {
+    primary: '#F15156',
+    secondary: '#0D3B66',
+    tertiary: '#F4D35E',
+    text: '#FFFFFF',
+  },
+}
+
 export default createGlobalStyle`
   * {
     margin: 0;
