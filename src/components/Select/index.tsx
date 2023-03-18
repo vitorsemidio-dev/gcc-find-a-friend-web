@@ -25,9 +25,7 @@ export function Select({ label, name, options, onChange }: SelectProps) {
       <FilterLabel htmlFor={name}>{label}</FilterLabel>
       <FilterWrapper>
         <FilterInput name={name} id={name} onChange={onChange}>
-          <FilterInputOption value="" disabled selected>
-            Selecione
-          </FilterInputOption>
+          <FilterInputOption value="">Selecione</FilterInputOption>
           {options.map((option) => {
             return (
               <FilterInputOption key={option.value} value={option.value}>

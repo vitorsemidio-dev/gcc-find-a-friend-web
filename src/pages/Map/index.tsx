@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import chevron from '@/assets/icons/chevron-bottom-blue.svg'
@@ -36,43 +36,74 @@ interface IPetResponse {
   pets: IPet[]
 }
 
+type SearchFilters = {
+  age: string
+  city: string
+  energy: string
+  independence: string
+  size: string
+  type: PetTypeSearchOptions
+}
+
+const INITIAL_SEARCH_FILTERS: SearchFilters = {
+  age: '',
+  city: '',
+  energy: '',
+  independence: '',
+  size: '',
+  type: 'all',
+}
+
+function getQueryParams(search: string) {
+  const searchParams = new URLSearchParams(search)
+  const city = searchParams.get('city') || ''
+  return { city }
+}
+
 export function Map() {
-  const [type, setType] = useState<PetTypeSearchOptions>('all')
-  const [pets, setPets] = useState<IPet[]>([])
   const { search } = useLocation()
-  console.log(search)
+  const city = getQueryParams(search).city || 'Rio De Janeiro'
+  const [filters, setFilters] = useState<Partial<SearchFilters>>({
+    ...INITIAL_SEARCH_FILTERS,
+    city,
+  })
+  const [pets, setPets] = useState<IPet[]>([])
 
   useEffect(() => {
-    api.get<IPetResponse>(`/pets/São Paulo`).then((response) => {
-      setPets(response.data.pets)
-    })
+    handleSearchPets(filters)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  async function handleFilterByPetType(params: any) {
-    const { city, ...queryParamsPayload } = params
-    const queryParams = new URLSearchParams({ ...queryParamsPayload, type })
+  async function handleSearchPets(params: Partial<SearchFilters>) {
+    setFilters((state) => ({ ...state, ...params }))
+    const { city, ...queryParamsPayload } = { ...filters, ...params }
+    const queryParams = new URLSearchParams({ ...queryParamsPayload })
     const response = await api.get<IPetResponse>(`/pets/${city}`, {
       params: queryParams,
     })
     setPets(response.data.pets)
   }
 
+  async function handleFilterByPetType(e: ChangeEvent<HTMLSelectElement>) {
+    const type = e.target.value as PetTypeSearchOptions
+    await handleSearchPets({ ...filters, type })
+  }
+
   return (
     <Container>
-      <Aside onSearchPets={handleFilterByPetType} />
+      <Aside city={city} onSearchPets={handleSearchPets} />
 
       <Content>
         <Header>
           <p>
-            Encontre <span>324 amigos</span> na sua cidade
+            Encontre <span>{pets.length} amigos</span> na sua cidade
           </p>
           <SelectWrapper>
             <HeaderSelect
-              name="size"
-              id="size"
-              onChange={(e) =>
-                setType(e.target.value as unknown as PetTypeSearchOptions)
-              }
+              id="type"
+              name="type"
+              onChange={handleFilterByPetType}
+              value={filters.type}
             >
               <option value="all">Gatos e Cachorros</option>
               <option value="cat">Gatos</option>

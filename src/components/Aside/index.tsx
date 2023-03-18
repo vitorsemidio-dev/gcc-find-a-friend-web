@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 
 import logo from '@/assets/icons/logo.svg'
 import search from '@/assets/icons/search.svg'
@@ -89,27 +89,28 @@ type SearchFilters = {
 }
 
 interface AsideProps {
-  onSearchPets: (searchFilters: SearchFilters) => void
+  city: string
+  onSearchPets: (searchFilters: Partial<SearchFilters>) => Promise<void>
 }
-
-export function Aside({ onSearchPets }: AsideProps) {
+export function Aside({ city, onSearchPets }: AsideProps) {
   const [searchFilters, setSearchFilters] = useState({
     age: '',
-    city: '',
+    city,
     energy: '',
     size: '',
     independence: '',
   })
 
-  function handleSearchPets() {
-    onSearchPets(searchFilters)
+  async function handleSearchPets() {
+    await onSearchPets(searchFilters)
   }
 
-  function handleChangeSearchFilters(
-    field: keyof typeof searchFilters,
-    value: string,
+  async function handleChangeSearchFilters(
+    e: ChangeEvent<HTMLSelectElement | HTMLInputElement>,
   ) {
-    setSearchFilters({ ...searchFilters, [field]: value })
+    const { name: field, value } = e.target
+    setSearchFilters((state) => ({ ...state, [field]: value }))
+    await onSearchPets({ ...searchFilters, [field]: value })
   }
 
   return (
@@ -119,11 +120,11 @@ export function Aside({ onSearchPets }: AsideProps) {
           <img src={logo} alt="" />
           <HeaderInput>
             <input
+              name="city"
               type="text"
               placeholder="Insira uma cidade"
-              onChange={(e) =>
-                handleChangeSearchFilters('city', e.target.value)
-              }
+              onChange={(e) => handleChangeSearchFilters(e)}
+              value={searchFilters.city}
             />
             <Button onClick={handleSearchPets} disabled={!searchFilters.city}>
               <img src={search} alt="ícone de lupa" />
@@ -138,32 +139,32 @@ export function Aside({ onSearchPets }: AsideProps) {
             name="age"
             label="Idade"
             options={ageOptions}
-            onChange={(e) => handleChangeSearchFilters('age', e.target.value)}
+            onChange={(e) => handleChangeSearchFilters(e)}
+            value={searchFilters.age}
           />
 
           <Select
             name="energy"
             label="Nível de energia"
             options={energyOptions}
-            onChange={(e) =>
-              handleChangeSearchFilters('energy', e.target.value)
-            }
+            onChange={(e) => handleChangeSearchFilters(e)}
+            value={searchFilters.energy}
           />
 
           <Select
             name="size"
             label="Porte do animal"
             options={sizeOptions}
-            onChange={(e) => handleChangeSearchFilters('size', e.target.value)}
+            onChange={(e) => handleChangeSearchFilters(e)}
+            value={searchFilters.size}
           />
 
           <Select
             name="independence"
             label="Nível de independência"
             options={independenceOptions}
-            onChange={(e) =>
-              handleChangeSearchFilters('independence', e.target.value)
-            }
+            onChange={(e) => handleChangeSearchFilters(e)}
+            value={searchFilters.independence}
           />
         </ContentFilters>
       </AsideContent>
