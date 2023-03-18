@@ -12,16 +12,14 @@ https://user-images.githubusercontent.com/52754546/226121575-e5bdada3-697e-4689-
 
 ## 🧭 Como rodar o projeto
 
+**Siga as instruções para rodar a API**
+
+- [GCC FindAFriend API](https://github.com/vitorsemidio-dev/gcc-find-a-friend-api)
+
 **Clone este repositório**
 
 ```bash
-git clone https://github.com/vitorsemidio-dev/find-a-friend-web.git
-```
-
-**Clone o repositório da API**
-
-```bash
-git clone https://github.com/vitorsemidio-dev/gcc-find-a-friend-api.git
+git clone https://github.com/vitorsemidio-dev/gcc-find-a-friend-web.git
 ```
 
 **Instale as dependências em cada projeto**
