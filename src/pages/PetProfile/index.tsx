@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import alertOutline from '@/assets/icons/alert-outline.svg'
@@ -8,11 +8,11 @@ import circleDuotone from '@/assets/icons/circle-duotone.svg'
 import circleFill from '@/assets/icons/circle-fill.svg'
 import logoImg from '@/assets/icons/logo.svg'
 import maximize from '@/assets/icons/maximize.svg'
-import whatsappFill from '@/assets/icons/ri_whatsapp-fill.svg'
-import whatsappWhite from '@/assets/icons/whatsapp.svg'
+import { ButtonWhatsApp } from '@/components/ButtonWhatsApp'
+import { ChipPhoneNumber } from '@/components/ChipPhoneNumber'
 import { RateCard } from '@/components/RateCard'
-import { api } from '@/services/http'
-import { formatPhoneNumber } from '@/utils/format-phone-number'
+import { energyRecord, sizeRecord } from '@/constant/pet-record'
+import { usePetDetail, usePetGallery, usePetRequirements } from '@/hooks/usePet'
 
 import {
   CharacteristicsList,
@@ -20,104 +20,21 @@ import {
   Content,
   FooterActions,
   Header,
-  ImageFullCardContainer,
+  Banner,
+  ImageList,
+  ImageListItem,
   ProfileContainer,
+  RequirementList,
+  RequirementListItem,
   SectionContact,
   SectionImages,
   SectionPet,
-  SectionRequired,
+  SectionRequirement,
   SquashIcon,
 } from './styles'
 
 type PetProfileParams = {
   id: string
-}
-
-type PetGallery = {
-  id: string
-  image: string
-  petId: string
-  photo_url: string
-}
-
-function usePetGallery(petId?: string) {
-  const [petGallery, setPetGallery] = useState<PetGallery[]>([])
-
-  const fetchPetGallery = useCallback(async () => {
-    if (!petId) return
-    const { data } = await api.get<{ pet_gallery: PetGallery[] }>(
-      `/pets/gallery/${petId}`,
-    )
-    setPetGallery(data.pet_gallery)
-  }, [petId])
-
-  useEffect(() => {
-    fetchPetGallery()
-  }, [petId, fetchPetGallery])
-
-  return petGallery
-}
-
-type PetDetail = {
-  id: string
-  name: string
-  description: string
-  city: string
-  age: string
-  energy: number
-  size: string
-  independence: string
-  type: string
-  photo: string
-  orgId: string
-  org: {
-    id: string
-    nome: string
-    address: string
-    cep: string
-    whatsappNumber: string
-  }
-  photo_url: string
-}
-
-function usePetDetail(petId?: string) {
-  const [petDetail, setPetDetail] = useState<PetDetail>({} as PetDetail)
-
-  const fetchPetDetail = useCallback(async () => {
-    if (!petId) return
-    const { data } = await api.get<{ pet: PetDetail }>(`/pets/show/${petId}`)
-    setPetDetail(data.pet)
-  }, [petId])
-
-  useEffect(() => {
-    fetchPetDetail()
-  }, [petId, fetchPetDetail])
-
-  return petDetail
-}
-
-type Requirements = {
-  id: string
-  title: string
-  petId: string
-}
-
-function usePetRequirements(petId?: string) {
-  const [requirements, setRequirements] = useState<Requirements[]>([])
-
-  const fetchPetRequirements = useCallback(async () => {
-    if (!petId) return
-    const { data } = await api.get<{ adoption_requirements: Requirements[] }>(
-      `/pets/adoption-requirements/${petId}`,
-    )
-    setRequirements(data.adoption_requirements)
-  }, [petId])
-
-  useEffect(() => {
-    fetchPetRequirements()
-  }, [petId, fetchPetRequirements])
-
-  return requirements
 }
 
 export function PetProfile() {
@@ -126,6 +43,9 @@ export function PetProfile() {
   const petDetail = usePetDetail(params.id)
   const petImages = usePetGallery(params.id)
   const requirements = usePetRequirements(params.id)
+  const [imageSelected, setImageSelected] = useState<string>(
+    petDetail.photo_url,
+  )
 
   return (
     <Container>
@@ -135,18 +55,34 @@ export function PetProfile() {
         </Header>
         <ProfileContainer>
           <SectionImages>
-            <ImageFullCardContainer>
-              <img src={petDetail.photo_url} alt={petDetail.name} />
-            </ImageFullCardContainer>
-            <ul>
-              {petImages.map((image) => {
-                return (
-                  <li key={image.id}>
-                    <img src={image.photo_url} alt="" />
-                  </li>
-                )
-              })}
-            </ul>
+            <Banner>
+              <img
+                src={imageSelected || petDetail.photo_url}
+                alt={petDetail.name}
+              />
+            </Banner>
+            <ImageList>
+              {petImages.map((image) => (
+                <ImageListItem
+                  key={image.id}
+                  onClick={() => setImageSelected(image.photo_url)}
+                >
+                  <img
+                    src={image.photo_url}
+                    alt=""
+                    className={
+                      imageSelected
+                        ? imageSelected === image.photo_url
+                          ? 'active'
+                          : ''
+                        : petImages.at(0)?.photo_url === image.photo_url
+                        ? 'active'
+                        : ''
+                    }
+                  />
+                </ImageListItem>
+              ))}
+            </ImageList>
           </SectionImages>
 
           <SectionPet>
@@ -154,9 +90,9 @@ export function PetProfile() {
             <p>{petDetail.description}</p>
             <CharacteristicsList>
               <RateCard
-                initialRate={4}
+                initialRate={energyRecord[petDetail?.energy]?.valueAsNumber}
                 maxRate={5}
-                label={'Muita energia'}
+                label={energyRecord[petDetail?.energy]?.label}
                 rateOffSymbol={boltDuotone}
                 rateOnSymbol={boltOutline}
               />
@@ -168,9 +104,9 @@ export function PetProfile() {
                 rateOnSymbol={maximize}
               />
               <RateCard
-                initialRate={1}
+                initialRate={sizeRecord[petDetail?.size]?.valueAsNumber}
                 maxRate={3}
-                label={'Pequenino'}
+                label={sizeRecord[petDetail?.size]?.label}
                 rateOffSymbol={circleDuotone}
                 rateOnSymbol={circleFill}
               />
@@ -186,34 +122,29 @@ export function PetProfile() {
               <p>{petDetail.org?.address}</p>
             </div>
             <div className="contact-info">
-              <button>
-                <img src={whatsappFill} alt="" />
-                <span>{formatPhoneNumber(petDetail.org?.whatsappNumber)}</span>
-              </button>
+              <ChipPhoneNumber phoneNumber={petDetail.org?.whatsappNumber} />
             </div>
           </SectionContact>
 
-          <SectionRequired>
+          <SectionRequirement>
             <header>
               <h2>Requisitos para adoção</h2>
             </header>
-            <ul>
-              {requirements.map((requirement) => {
-                return (
-                  <li key={requirement.id}>
-                    <img src={alertOutline} alt="" />
-                    {requirement.title}
-                  </li>
-                )
-              })}
-            </ul>
-          </SectionRequired>
+            <RequirementList>
+              {requirements.map((requirement) => (
+                <RequirementListItem key={requirement.id}>
+                  <img src={alertOutline} alt="" />
+                  {requirement.title}
+                </RequirementListItem>
+              ))}
+            </RequirementList>
+          </SectionRequirement>
 
           <FooterActions>
-            <button>
-              <img src={whatsappWhite} alt="" />
-              <span>Entrar em Contato</span>
-            </button>
+            <ButtonWhatsApp
+              label="Entrar em Contato"
+              whatsappNumber={petDetail.org?.whatsappNumber}
+            />
           </FooterActions>
         </ProfileContainer>
       </Content>

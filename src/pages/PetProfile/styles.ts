@@ -1,13 +1,6 @@
 import styled from 'styled-components'
 
-function hexToRgb(hex: string, alpha = 1): string {
-  const r = parseInt(hex.substring(1, 3), 16)
-  const g = parseInt(hex.substring(3, 5), 16)
-  const b = parseInt(hex.substring(5, 7), 16)
-  const rgba = `rgba(${r}, ${g}, ${b}, ${alpha})`
-
-  return rgba
-}
+import { hexToRgb } from '@/utils/hex-to-rgb'
 
 export const Container = styled.div`
   display: flex;
@@ -68,36 +61,37 @@ export const CharacteristicsList = styled.ul`
   gap: 14px;
 `
 
-export const SectionImages = styled.section`
-  ul {
-    margin-top: 1rem;
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 1rem;
-  }
+export const SectionImages = styled.section``
 
-  li {
-    list-style: none;
-    border-radius: 15px;
-    overflow: hidden;
+export const ImageList = styled.ul`
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+`
 
-    img {
-      max-width: 100%;
-      object-fit: cover;
-      object-position: center;
-      aspect-ratio: 1/1;
-      opacity: 0.3;
-      transition: opacity 300ms;
-    }
+export const ImageListItem = styled.li`
+  list-style: none;
+  border-radius: 15px;
+  overflow: hidden;
 
-    img:hover {
+  img {
+    max-width: 100%;
+    object-fit: cover;
+    object-position: center;
+    aspect-ratio: 1/1;
+    opacity: 0.3;
+    transition: opacity 300ms;
+
+    &:hover,
+    &.active {
       opacity: 1;
       cursor: pointer;
     }
   }
 `
 
-export const ImageFullCardContainer = styled.div`
+export const Banner = styled.div`
   margin-top: -1.5rem;
   margin-left: -4.5rem;
   margin-right: -4.5rem;
@@ -136,16 +130,6 @@ export const SectionContact = styled.section`
 
   .contact-info {
     grid-column-start: 2;
-    button {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 12px 24px;
-      border-radius: 15px;
-      background-color: ${({ theme }) =>
-        hexToRgb(theme.colors.secondary, 0.05)};
-      border: 2px solid transparent;
-    }
   }
 `
 
@@ -164,7 +148,7 @@ export const SquashIcon = styled.div`
   }
 `
 
-export const SectionRequired = styled.section`
+export const SectionRequirement = styled.section`
   border-top: 1px solid ${({ theme }) => theme.colors.border};
   margin-top: 55px;
   padding-top: 55px;
@@ -176,47 +160,31 @@ export const SectionRequired = styled.section`
       letter-spacing: -0.02em;
     }
   }
+`
 
-  ul {
-    margin-top: 2.5rem;
+export const RequirementList = styled.ul`
+  margin-top: 2.5rem;
+  display: grid;
+  gap: 1rem;
+`
 
-    li {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 12px 40px;
-      color: ${({ theme }) => theme.colors.danger};
-      border: 1px solid currentColor;
-      margin-bottom: 1rem;
-      border-radius: 15px;
-      background-image: ${() =>
-        `linear-gradient(
-            90deg,
-            ${hexToRgb('#F75F60', 0.1)},
-            ${hexToRgb('#F15156', 0)}
-        )`};
-    }
-  }
+export const RequirementListItem = styled.li`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 12px 40px;
+  color: ${({ theme }) => theme.colors.danger};
+  border: 1px solid currentColor;
+  border-radius: 15px;
+  background-image: ${() =>
+    `linear-gradient(90deg, ${hexToRgb('#F75F60', 0.1)}, ${hexToRgb(
+      '#F15156',
+      0,
+    )})`};
 `
 
 export const FooterActions = styled.footer`
   border-top: 1px solid ${({ theme }) => theme.colors.border};
   margin-top: 50px;
   padding-top: 50px;
-
-  button {
-    font-weight: 800;
-    font-size: 18px;
-    line-height: 26px;
-    color: ${({ theme }) => theme.colors.text};
-    background-color: #3cdc8c;
-    border: none;
-    border-radius: 15px;
-    width: 100%;
-    padding: 18px 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-  }
 `
