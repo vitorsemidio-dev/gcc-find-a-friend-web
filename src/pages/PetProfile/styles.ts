@@ -101,6 +101,8 @@ export const ImageFullCardContainer = styled.div`
   margin-top: -1.5rem;
   margin-left: -4.5rem;
   margin-right: -4.5rem;
+  height: 336px;
+  background-color: ${({ theme }) => theme.colors.bgCard};
 
   img {
     width: 100%;
