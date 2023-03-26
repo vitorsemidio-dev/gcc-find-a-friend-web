@@ -61,6 +61,13 @@ export const SectionPet = styled.section`
   }
 `
 
+export const CharacteristicsList = styled.ul`
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+`
+
 export const SectionImages = styled.section`
   ul {
     margin-top: 1rem;
