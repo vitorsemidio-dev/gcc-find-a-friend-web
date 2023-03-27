@@ -1,9 +1,10 @@
+import { useNavigate } from 'react-router-dom'
+
 import logo from '@/assets/icons/logo.svg'
 import arrowLeft from '@/assets/icons/arrow-left.svg'
 import { Button } from '@/components/Button'
 
 import { Container } from './styles'
-import { useNavigate } from 'react-router-dom'
 
 export function Sidebar() {
   const navigate = useNavigate()
@@ -16,7 +17,7 @@ export function Sidebar() {
     <Container>
       <img src={logo} alt="" />
 
-      <Button style={{ width: 48, height: 48 }} onClick={handleGoBack}>
+      <Button onClick={handleGoBack}>
         <img src={arrowLeft} alt="" />
       </Button>
     </Container>

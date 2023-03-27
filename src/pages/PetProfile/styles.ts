@@ -6,9 +6,14 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 44rem;
+  max-width: 50rem;
   margin: 0 auto;
-  padding: 2.5rem 0rem 4rem;
+  padding: 2.5rem 1rem 4rem 7rem;
+
+  @media (max-width: 768px) {
+    padding-left: calc(1rem + 3rem);
+    padding-right: 1rem;
+  }
 `
 
 export const Content = styled.div``
@@ -34,6 +39,10 @@ export const ProfileContainer = styled.div`
   color: ${({ theme }) => theme.colors.secondary};
   border-radius: 20px;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
 `
 export const SectionPet = styled.section`
   margin-top: 70px;
@@ -66,7 +75,7 @@ export const SectionImages = styled.section``
 export const ImageList = styled.ul`
   margin-top: 2rem;
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   gap: 1rem;
 `
 
@@ -131,11 +140,20 @@ export const SectionContact = styled.section`
   .contact-info {
     grid-column-start: 2;
   }
+
+  @media (max-width: 768px) {
+    .contact-info {
+      grid-column-start: 1;
+      grid-column-end: 3;
+    }
+  }
 `
 
 export const SquashIcon = styled.div`
   width: 64px;
   height: 64px;
+  width: 48px;
+  height: 48px;
   background-color: #f27006;
   display: flex;
   justify-content: center;
@@ -143,8 +161,8 @@ export const SquashIcon = styled.div`
   border-radius: 15px;
 
   img {
-    width: 28px;
-    height: 28px;
+    width: 20px;
+    height: 20px;
   }
 `
 
@@ -181,6 +199,10 @@ export const RequirementListItem = styled.li`
       '#F15156',
       0,
     )})`};
+
+  @media (max-width: 768px) {
+    padding: 12px 20px;
+  }
 `
 
 export const FooterActions = styled.footer`
