@@ -22,7 +22,7 @@ type SelectProps = ComponentProps<typeof FilterInput> & {
 export function Select({ label, name, options, onChange }: SelectProps) {
   return (
     <Filter>
-      <FilterLabel htmlFor={name}>{label}</FilterLabel>
+      {label && <FilterLabel htmlFor={name}>{label}</FilterLabel>}
       <FilterWrapper>
         <FilterInput name={name} id={name} onChange={onChange}>
           <FilterInputOption value="">Selecione</FilterInputOption>

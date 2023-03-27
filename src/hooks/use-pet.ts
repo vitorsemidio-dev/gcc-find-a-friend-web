@@ -1,60 +1,21 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { api } from '@/services/http'
-
-type PetGallery = {
-  id: string
-  image: string
-  petId: string
-  photo_url: string
-}
-
-export function usePetGallery(petId?: string) {
-  const [petGallery, setPetGallery] = useState<PetGallery[]>([])
-
-  const fetchPetGallery = useCallback(async () => {
-    if (!petId) return
-    const { data } = await api.get<{ pet_gallery: PetGallery[] }>(
-      `/pets/gallery/${petId}`,
-    )
-    setPetGallery(data.pet_gallery)
-  }, [petId])
-
-  useEffect(() => {
-    fetchPetGallery()
-  }, [petId, fetchPetGallery])
-
-  return petGallery
-}
-
-type PetDetail = {
-  id: string
-  name: string
-  description: string
-  city: string
-  age: string
-  energy: number
-  size: string
-  independence: string
-  type: string
-  photo: string
-  orgId: string
-  org: {
-    id: string
-    nome: string
-    address: string
-    cep: string
-    whatsappNumber: string
-  }
-  photo_url: string
-}
+import {
+  PetDetail,
+  PetGallery,
+  PetRequirement,
+  ResponsePet,
+  ResponsePetGallery,
+  ResponsePetRequirements,
+} from '@/models/pet'
 
 export function usePetDetail(petId?: string) {
   const [petDetail, setPetDetail] = useState<PetDetail>({} as PetDetail)
 
   const fetchPetDetail = useCallback(async () => {
     if (!petId) return
-    const { data } = await api.get<{ pet: PetDetail }>(`/pets/show/${petId}`)
+    const { data } = await api.get<ResponsePet>(`/pets/show/${petId}`)
     setPetDetail(data.pet)
   }, [petId])
 
@@ -65,10 +26,20 @@ export function usePetDetail(petId?: string) {
   return petDetail
 }
 
-type PetRequirement = {
-  id: string
-  title: string
-  petId: string
+export function usePetGallery(petId?: string) {
+  const [petGallery, setPetGallery] = useState<PetGallery[]>([])
+
+  const fetchPetGallery = useCallback(async () => {
+    if (!petId) return
+    const { data } = await api.get<ResponsePetGallery>(`/pets/gallery/${petId}`)
+    setPetGallery(data.pet_gallery)
+  }, [petId])
+
+  useEffect(() => {
+    fetchPetGallery()
+  }, [petId, fetchPetGallery])
+
+  return petGallery
 }
 
 export function usePetRequirements(petId?: string) {
@@ -76,7 +47,7 @@ export function usePetRequirements(petId?: string) {
 
   const fetchPetRequirements = useCallback(async () => {
     if (!petId) return
-    const { data } = await api.get<{ adoption_requirements: PetRequirement[] }>(
+    const { data } = await api.get<ResponsePetRequirements>(
       `/pets/adoption-requirements/${petId}`,
     )
     setRequirements(data.adoption_requirements)
