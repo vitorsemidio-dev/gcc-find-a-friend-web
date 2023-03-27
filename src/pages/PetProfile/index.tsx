@@ -32,6 +32,7 @@ import {
   SectionRequirement,
   SquashIcon,
 } from './styles'
+import { Sidebar } from '@/components/Sidebar'
 
 type PetProfileParams = {
   id: string
@@ -49,6 +50,7 @@ export function PetProfile() {
 
   return (
     <Container>
+      <Sidebar />
       <Content>
         <Header>
           <p>Seu novo melhor amigo</p>
