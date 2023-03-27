@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 import chevron from '@/assets/icons/chevron-bottom-blue.svg'
 import { api } from '@/services/http'
@@ -114,12 +114,9 @@ export function Map() {
         </Header>
         <Display>
           {pets.map((pet) => (
-            <Card
-              key={pet.id}
-              path={pet.photo_url}
-              type={pet.type}
-              name={pet.name}
-            />
+            <Link key={pet.id} to={`/pet-profile/${pet.id}`}>
+              <Card path={pet.photo_url} type={pet.type} name={pet.name} />
+            </Link>
           ))}
         </Display>
       </Content>
