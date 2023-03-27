@@ -63,6 +63,36 @@ export const SectionPet = styled.section`
   }
 `
 
+export const MapOrgContainer = styled.div`
+  margin-top: 64px;
+  border-radius: 20px;
+  width: 100%;
+  height: 290px;
+  max-width: 560px;
+  background-color: ${({ theme }) => theme.colors.secondary};
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr auto;
+
+  .leaflet-container {
+    border-radius: 20px;
+  }
+
+  footer {
+    padding: 20px 0;
+    text-align: center;
+    grid-row-end: 3;
+
+    a {
+      color: ${({ theme }) => theme.colors.tertiary};
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 25px;
+    }
+  }
+`
+
 export const CharacteristicsList = styled.ul`
   margin-top: 2.5rem;
   display: grid;
