@@ -31,7 +31,7 @@ export function useCitys(state?: string) {
 }
 
 export function useCoordinates(cep?: string) {
-  const [coordinates, setCoordinates] = useState<Coordinates>({} as any)
+  const [coordinates, setCoordinates] = useState<Coordinates>({} as Coordinates)
 
   const getCoordinatesByCep = useCallback(async () => {
     if (!cep) return

@@ -11,10 +11,6 @@ import circleFill from '@/assets/icons/circle-fill.svg'
 import logoImg from '@/assets/icons/logo.svg'
 import mapMarker from '@/assets/icons/map-marker.svg'
 import maximize from '@/assets/icons/maximize.svg'
-import { ButtonWhatsApp } from '@/components/ButtonWhatsApp'
-import { ChipPhoneNumber } from '@/components/ChipPhoneNumber'
-import { RateCard } from '@/components/RateCard'
-import { Sidebar } from '@/components/Sidebar'
 import { energyRecord, sizeRecord } from '@/constant/pet-record'
 import { OPEN_STREET_MAP } from '@/constant/tile-layers'
 import { useCoordinates } from '@/hooks/use-location'
@@ -23,6 +19,10 @@ import {
   usePetGallery,
   usePetRequirements,
 } from '@/hooks/use-pet'
+import { ButtonWhatsApp } from '~/ButtonWhatsApp'
+import { ChipPhoneNumber } from '~/ChipPhoneNumber'
+import { RateCard } from '~/RateCard'
+import { Sidebar } from '~/Sidebar'
 
 import {
   Banner,
