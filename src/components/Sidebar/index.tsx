@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 
 import logo from '@/assets/icons/logo.svg'
 import arrowLeft from '@/assets/icons/arrow-left.svg'
-import { Button } from '@/components/Button'
+import { Button } from '~/Button'
 
 import { Container } from './styles'
 

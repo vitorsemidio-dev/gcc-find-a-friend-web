@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom'
 import logo from '@/assets/icons/logo.svg'
 import searchIcon from '@/assets/icons/search.svg'
 import dogHero from '@/assets/images/dog-hero.png'
-import { Button } from '@/components/Button'
-import { Select } from '@/components/Select'
 import { useCitys, useStates } from '@/hooks/use-location'
+import { Button } from '~/Button'
+import { Select } from '~/Select'
 
 import {
   AsideRight,
