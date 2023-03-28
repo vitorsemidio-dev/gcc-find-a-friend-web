@@ -3,6 +3,7 @@ export type EnergyOptions = 1 | 2 | 3 | 4 | 5
 export type IndependenceOptions = 'low' | 'medium' | 'high'
 export type PetTypeOptions = 'dog' | 'cat'
 export type SizeOptions = 'small' | 'medium' | 'large'
+export type PetTypeSearchOptions = 'all' | 'cat' | 'dog'
 
 export type Org = {
   id: string
@@ -41,6 +42,15 @@ export type PetGallery = {
   photo_url: string
 }
 
+export type SearchFilters = {
+  age: string
+  city: string
+  energy: string
+  independence: string
+  size: string
+  type: PetTypeSearchOptions
+}
+
 export type ResponsePet = {
   pet: PetDetail
 }
@@ -51,4 +61,8 @@ export type ResponsePetGallery = {
 
 export type ResponsePetRequirements = {
   adoption_requirements: PetRequirement[]
+}
+
+export type ResponsePets = {
+  pets: PetDetail[]
 }

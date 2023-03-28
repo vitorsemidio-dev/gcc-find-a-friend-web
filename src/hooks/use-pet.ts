@@ -3,12 +3,32 @@ import { useCallback, useEffect, useState } from 'react'
 import { api } from '@/services/http'
 import {
   PetDetail,
+  ResponsePets,
   PetGallery,
   PetRequirement,
   ResponsePet,
   ResponsePetGallery,
   ResponsePetRequirements,
+  SearchFilters,
 } from '@/models/pet'
+
+export function useFetchPets(params: Partial<SearchFilters>) {
+  const [pets, setPets] = useState<PetDetail[]>([])
+
+  const fetchPets = useCallback(async () => {
+    const { city, ...queryParamsPayload } = params
+    if (!city) return
+    const queryParams = new URLSearchParams({ ...queryParamsPayload })
+    const response = await api.get<ResponsePets>(`/pets/${city}?${queryParams}`)
+    setPets(response.data.pets)
+  }, [params])
+
+  useEffect(() => {
+    fetchPets()
+  }, [fetchPets])
+
+  return pets
+}
 
 export function usePetDetail(petId?: string) {
   const [petDetail, setPetDetail] = useState<PetDetail>({} as PetDetail)

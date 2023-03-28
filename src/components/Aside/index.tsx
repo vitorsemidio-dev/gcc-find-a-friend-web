@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent } from 'react'
 
 import logo from '@/assets/icons/logo.svg'
 import search from '@/assets/icons/search.svg'
@@ -13,6 +13,7 @@ import {
   ContentHeader,
   HeaderInput,
 } from './styles'
+import { useSearchPets } from '@/contexts/SearchPetsContext'
 
 const ageOptions = [
   {
@@ -80,37 +81,18 @@ const independenceOptions = [
   },
 ]
 
-type SearchFilters = {
-  age: string
-  city: string
-  energy: string
-  size: string
-  independence: string
-}
-
-interface AsideProps {
-  city: string
-  onSearchPets: (searchFilters: Partial<SearchFilters>) => Promise<void>
-}
-export function Aside({ city, onSearchPets }: AsideProps) {
-  const [searchFilters, setSearchFilters] = useState({
-    age: '',
-    city,
-    energy: '',
-    size: '',
-    independence: '',
-  })
+export function Aside() {
+  const { handleSearchFilters, searchFilters } = useSearchPets()
 
   async function handleSearchPets() {
-    await onSearchPets(searchFilters)
+    handleSearchFilters(searchFilters)
   }
 
-  async function handleChangeSearchFilters(
+  function handleChangeSearchFilters(
     e: ChangeEvent<HTMLSelectElement | HTMLInputElement>,
   ) {
     const { name: field, value } = e.target
-    setSearchFilters((state) => ({ ...state, [field]: value }))
-    await onSearchPets({ ...searchFilters, [field]: value })
+    handleSearchFilters({ [field]: value })
   }
 
   return (
