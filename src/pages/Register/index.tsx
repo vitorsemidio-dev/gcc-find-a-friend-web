@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import LogoHorizontal from '@/assets/icons/logo-horizontal.svg'
 import Eye from '@/assets/icons/password-eye.svg'
 import Pets from '@/assets/icons/pets.svg'
+import { MapPet } from '@/components/MapPet'
+import { useCoordinates } from '@/hooks/use-location'
 import { api } from '@/services/http'
 
 import {
@@ -27,22 +29,17 @@ export function Register() {
     password: '',
     passwordConfirm: '',
   })
-
+  const coordinates = useCoordinates(registerForm.cep)
   const navigate = useNavigate()
 
   async function handleRegisterOrganization(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     try {
-      const response = await api.post('/orgs', registerForm)
-      console.log(response)
+      await api.post('/orgs', registerForm)
       handleLoginOrganization()
     } catch (err) {
       console.log(err)
     }
-  }
-
-  function handleRenderMapLocation() {
-    // TODO
   }
 
   function handleLoginOrganization() {
@@ -65,7 +62,7 @@ export function Register() {
                 type="text"
                 name="name"
                 id="name"
-                placeholder="John Doe"
+                placeholder="Find Friend"
                 value={registerForm.name}
                 onChange={(e) =>
                   setRegisterForm({ ...registerForm, name: e.target.value })
@@ -79,10 +76,24 @@ export function Register() {
                 type="text"
                 name="email"
                 id="email"
-                placeholder="mayk@email.com"
+                placeholder="find_friend@email.com"
                 value={registerForm.email}
                 onChange={(e) =>
                   setRegisterForm({ ...registerForm, email: e.target.value })
+                }
+              />
+            </InputWrapper>
+
+            <label htmlFor="cep">CEP</label>
+            <InputWrapper>
+              <input
+                type="text"
+                name="cep"
+                id="cep"
+                placeholder="12345678"
+                value={registerForm.cep}
+                onChange={(e) =>
+                  setRegisterForm({ ...registerForm, cep: e.target.value })
                 }
               />
             </InputWrapper>
@@ -93,13 +104,18 @@ export function Register() {
                 type="text"
                 name="address"
                 id="address"
-                placeholder="Rua do Meio, 1825"
+                placeholder="Rua do Pet, 1825"
                 value={registerForm.address}
                 onChange={(e) =>
                   setRegisterForm({ ...registerForm, address: e.target.value })
                 }
               />
             </InputWrapper>
+
+            <MapPet
+              coordinates={coordinates}
+              popupText={`${registerForm.name} - ${registerForm.address}`}
+            />
 
             <label htmlFor="whatsappNumber">Whatsapp</label>
             <InputWrapper>
