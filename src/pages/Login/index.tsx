@@ -1,43 +1,51 @@
-import { FormEvent, useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { z } from 'zod'
 
 import LogoHorizontal from '@/assets/icons/logo-horizontal.svg'
 import Pets from '@/assets/icons/pets.svg'
-import Eye from '@/assets/icons/password-eye.svg'
+import { InputText } from '@/components/Input/InputText'
+import { InputTextPassword } from '@/components/Input/InputTextPassword'
+import { api } from '@/services/http'
 
 import {
-  Wrapper,
-  Container,
-  Card,
-  FormWrapper,
-  Form,
-  InputWrapper,
-  Buttons,
   Button,
+  Buttons,
+  Card,
+  Container,
+  Form,
+  FormWrapper,
+  Wrapper,
 } from './styles'
-import { api } from '@/services/http'
-import { useNavigate } from 'react-router-dom'
+
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6).max(50),
+})
+
+type LoginForm = z.infer<typeof loginSchema>
 
 export function Login() {
-  const [loginForm, setLoginForm] = useState({
-    email: '',
-    password: '',
+  const {
+    formState: { errors },
+    handleSubmit,
+    register,
+  } = useForm<LoginForm>({
+    resolver: zodResolver(loginSchema),
   })
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
   const navigate = useNavigate()
 
-  async function handleLogin(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
+  async function handleLogin(loginForm: LoginForm) {
     try {
-      const response = await api.post('/auth/sessions', loginForm)
-      console.log(response)
+      await api.post('/auth/sessions', loginForm)
     } catch (err) {
       console.log(err)
     }
   }
 
   function handleRegisterOrganization() {
-    // TO DO
     navigate('/register')
   }
 
@@ -50,42 +58,24 @@ export function Login() {
         </Card>
         <FormWrapper>
           <h1>Boas-vindas!</h1>
-          <Form onSubmit={handleLogin}>
-            <label htmlFor="email">Email</label>
-            <InputWrapper>
-              <input
-                type="text"
-                name="email"
-                id="email"
-                placeholder="Email"
-                value={loginForm.email}
-                onChange={(e) =>
-                  setLoginForm({ ...loginForm, email: e.target.value })
-                }
-              />
-            </InputWrapper>
+          <Form onSubmit={handleSubmit(handleLogin)}>
+            <InputText
+              label="Email"
+              placeholder="Email"
+              errorMessage={errors.email?.message}
+              {...register('email')}
+            />
 
-            <label htmlFor="password">Senha</label>
-            <InputWrapper>
-              <input
-                type={isPasswordVisible ? 'text' : 'password'}
-                name="password"
-                id="password"
-                placeholder="Senha"
-                value={loginForm.password}
-                onChange={(e) =>
-                  setLoginForm({ ...loginForm, password: e.target.value })
-                }
-              />
-              <img
-                onClick={() => setIsPasswordVisible((prev) => !prev)}
-                src={Eye}
-                alt=""
-              />
-            </InputWrapper>
+            <InputTextPassword
+              label="Senha"
+              placeholder="Senha"
+              type="password"
+              errorMessage={errors.password?.message}
+              {...register('password')}
+            />
 
             <Buttons>
-              <Button type="submit" onClick={() => {}} className="primary">
+              <Button type="submit" className="primary">
                 Login
               </Button>
               <Button

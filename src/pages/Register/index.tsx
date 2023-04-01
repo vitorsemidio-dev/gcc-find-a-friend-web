@@ -1,12 +1,15 @@
-import { FormEvent, useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { z } from 'zod'
 
 import LogoHorizontal from '@/assets/icons/logo-horizontal.svg'
-import Eye from '@/assets/icons/password-eye.svg'
 import Pets from '@/assets/icons/pets.svg'
-import { MapPet } from '@/components/MapPet'
 import { useCoordinates } from '@/hooks/use-location'
 import { api } from '@/services/http'
+import { cepRegex } from '@/utils/regex'
+import { InputText, InputTextPassword } from '~/Input'
+import { MapPet } from '~/MapPet'
 
 import {
   Button,
@@ -15,27 +18,38 @@ import {
   Container,
   Form,
   FormWrapper,
-  InputWrapper,
   Wrapper,
 } from './styles'
 
+const registerSchema = z.object({
+  name: z.string().min(3).max(50),
+  email: z.string().email(),
+  address: z.string().min(3).max(50),
+  cep: z.string().regex(cepRegex).min(8).max(9),
+  whatsappNumber: z.string().min(14).max(14),
+  password: z.string().min(6).max(50),
+  passwordConfirm: z.string().min(6).max(50),
+})
+
+type RegisterForm = z.infer<typeof registerSchema>
+
 export function Register() {
-  const [registerForm, setRegisterForm] = useState({
-    name: '',
-    email: '',
-    address: '',
-    cep: '',
-    whatsappNumber: '',
-    password: '',
-    passwordConfirm: '',
+  const {
+    formState: { errors },
+    handleSubmit,
+    register,
+    watch,
+  } = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
   })
-  const coordinates = useCoordinates(registerForm.cep)
+
+  const coordinates = useCoordinates(watch('cep'))
   const navigate = useNavigate()
 
-  async function handleRegisterOrganization(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
+  async function handleRegisterOrganization(form: RegisterForm) {
+    if (!form) return
     try {
-      await api.post('/orgs', registerForm)
+      await api.post('/orgs', form)
       handleLoginOrganization()
     } catch (err) {
       console.log(err)
@@ -55,117 +69,62 @@ export function Register() {
         </Card>
         <FormWrapper>
           <h1>Cadastre sua organização</h1>
-          <Form onSubmit={(e) => handleRegisterOrganization(e)}>
-            <label htmlFor="name">Nome</label>
-            <InputWrapper>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                placeholder="Find Friend"
-                value={registerForm.name}
-                onChange={(e) =>
-                  setRegisterForm({ ...registerForm, name: e.target.value })
-                }
-              />
-            </InputWrapper>
+          <Form onSubmit={handleSubmit(handleRegisterOrganization)}>
+            <InputText
+              label="Nome"
+              placeholder="Find Friend"
+              errorMessage={errors.name?.message}
+              {...register('name')}
+            />
 
-            <label htmlFor="email">Email</label>
-            <InputWrapper>
-              <input
-                type="text"
-                name="email"
-                id="email"
-                placeholder="find_friend@email.com"
-                value={registerForm.email}
-                onChange={(e) =>
-                  setRegisterForm({ ...registerForm, email: e.target.value })
-                }
-              />
-            </InputWrapper>
+            <InputText
+              label="Email"
+              placeholder="find_friend@email.com"
+              errorMessage={errors.email?.message}
+              {...register('email')}
+            />
 
-            <label htmlFor="cep">CEP</label>
-            <InputWrapper>
-              <input
-                type="text"
-                name="cep"
-                id="cep"
-                placeholder="12345678"
-                value={registerForm.cep}
-                onChange={(e) =>
-                  setRegisterForm({ ...registerForm, cep: e.target.value })
-                }
-              />
-            </InputWrapper>
+            <InputText
+              label="CEP"
+              placeholder="12345678"
+              errorMessage={errors.cep?.message}
+              {...register('cep')}
+            />
 
-            <label htmlFor="address">Endereço</label>
-            <InputWrapper>
-              <input
-                type="text"
-                name="address"
-                id="address"
-                placeholder="Rua do Pet, 1825"
-                value={registerForm.address}
-                onChange={(e) =>
-                  setRegisterForm({ ...registerForm, address: e.target.value })
-                }
-              />
-            </InputWrapper>
+            <InputText
+              label="Endereço"
+              placeholder="Rua do Pet, 1825"
+              errorMessage={errors.address?.message}
+              {...register('address')}
+            />
 
             <MapPet
               coordinates={coordinates}
-              popupText={`${registerForm.name} - ${registerForm.address}`}
+              popupText={`Localização Organização`}
             />
 
-            <label htmlFor="whatsappNumber">Whatsapp</label>
-            <InputWrapper>
-              <input
-                type="text"
-                name="whatsappNumber"
-                id="whatsappNumber"
-                placeholder="99 99999 9999"
-                value={registerForm.whatsappNumber}
-                onChange={(e) =>
-                  setRegisterForm({
-                    ...registerForm,
-                    whatsappNumber: e.target.value,
-                  })
-                }
-              />
-            </InputWrapper>
+            <InputText
+              label="Whatsapp"
+              placeholder="99 99999 9999"
+              errorMessage={errors.whatsappNumber?.message}
+              {...register('whatsappNumber')}
+            />
 
-            <label htmlFor="password">Senha</label>
-            <InputWrapper>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Senha"
-                value={registerForm.password}
-                onChange={(e) =>
-                  setRegisterForm({ ...registerForm, password: e.target.value })
-                }
-              />
-              <img onClick={() => {}} src={Eye} alt="" />
-            </InputWrapper>
+            <InputTextPassword
+              label="Senha"
+              placeholder="Senha"
+              errorMessage={errors.password?.message}
+              type="password"
+              {...register('password')}
+            />
 
-            <label htmlFor="passwordConfirm">Confirmar senha</label>
-            <InputWrapper>
-              <input
-                type="password"
-                name="passwordConfirm"
-                id="passwordConfirm"
-                placeholder="Confirme sua senha"
-                value={registerForm.passwordConfirm}
-                onChange={(e) =>
-                  setRegisterForm({
-                    ...registerForm,
-                    passwordConfirm: e.target.value,
-                  })
-                }
-              />
-              <img onClick={() => {}} src={Eye} alt="" />
-            </InputWrapper>
+            <InputTextPassword
+              label="Confirmar senha"
+              placeholder="Confirme sua senha"
+              errorMessage={errors.passwordConfirm?.message}
+              type="password"
+              {...register('passwordConfirm')}
+            />
 
             <Buttons>
               <Button type="submit" className="primary">
