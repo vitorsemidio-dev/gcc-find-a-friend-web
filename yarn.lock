@@ -183,7 +183,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.19.0"
 
-"@babel/runtime@^7.20.7":
+"@babel/runtime@^7.20.6", "@babel/runtime@^7.20.7":
   version "7.21.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.21.0.tgz#5b55c9d394e5fcf304909a8b00c07dc217b56673"
   integrity sha512-xwII0//EObnq89Ji5AKYQaRYiW/nZ3llSv29d49IuxPhKbtJoLP+9QUUZ4nVragQVtaVGeZrpB+ZtG/Pdy/POw==
@@ -1716,6 +1716,13 @@ hoist-non-react-statics@^3.0.0, hoist-non-react-statics@^3.3.0:
   dependencies:
     react-is "^16.7.0"
 
+i18next@^22.4.13:
+  version "22.4.13"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-22.4.13.tgz#02e291ab0056eab13b7d356fb454ff991923eaa0"
+  integrity sha512-GX7flMHRRqQA0I1yGLmaZ4Hwt1JfLqagk8QPDPZsqekbKtXsuIngSVWM/s3SLgNkrEXjA+0sMGNuOEkkmyqmWg==
+  dependencies:
+    "@babel/runtime" "^7.20.6"
+
 ignore@^5.1.1, ignore@^5.2.0:
   version "5.2.4"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.2.4.tgz#a291c0c6178ff1b960befe47fcdec301674a6324"
@@ -2777,6 +2784,11 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+
+zod-i18n-map@^2.9.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/zod-i18n-map/-/zod-i18n-map-2.9.0.tgz#cadc7631d5fdecda9b6786b0aee7734af2bb4ada"
+  integrity sha512-HHb71MIHZ7HyQUgNJm+FNg997d1ptsa0lyw/3QDw1mu9CQx+feyhlVnMqtXS2W9YzGhknBrTLvLrLKJe0kyAPQ==
 
 zod@^3.21.4:
   version "3.21.4"
