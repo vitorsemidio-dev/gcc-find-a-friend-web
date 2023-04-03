@@ -1,6 +1,7 @@
 import 'leaflet/dist/leaflet.css'
 import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
+import './i18n/zod'
 
 import { SearchPetsContextProvider } from '@/contexts/SearchPetsContext'
 import { Router } from '@/routes'
