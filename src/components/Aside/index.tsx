@@ -15,7 +15,7 @@ import {
 } from './styles'
 import { useSearchPets } from '@/contexts/SearchPetsContext'
 
-const ageOptions = [
+export const ageOptions = [
   {
     label: 'Filhote',
     value: 'cub',
@@ -29,7 +29,7 @@ const ageOptions = [
     value: 'elderly',
   },
 ]
-const energyOptions = [
+export const energyOptions = [
   {
     label: 'Muito baixa',
     value: 1,
@@ -51,7 +51,7 @@ const energyOptions = [
     value: 5,
   },
 ]
-const sizeOptions = [
+export const sizeOptions = [
   {
     label: 'Pequenino',
     value: 'small',
@@ -66,7 +66,7 @@ const sizeOptions = [
   },
 ]
 
-const independenceOptions = [
+export const independenceOptions = [
   {
     label: 'Baixo',
     value: 'low',
@@ -78,6 +78,32 @@ const independenceOptions = [
   {
     label: 'Alto',
     value: 'high',
+  },
+]
+
+export const genderOptions = [
+  {
+    label: 'Masculino',
+    value: 'male',
+  },
+  {
+    label: 'Feminino',
+    value: 'female',
+  },
+]
+
+export const environmentsOptions = [
+  {
+    label: 'Ambiente amplo',
+    value: 'spacious',
+  },
+  {
+    label: 'Ambiente externo',
+    value: 'outdoor',
+  },
+  {
+    label: 'Ambiente interno',
+    value: 'indoor',
   },
 ]
 

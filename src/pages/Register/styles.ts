@@ -12,7 +12,6 @@ export const Wrapper = styled.div`
 export const Container = styled.main`
   max-width: 1112px;
   width: 100%;
-  /* height: 100%; */
   display: flex;
   justify-content: space-between;
   margin: 0 auto;
@@ -71,27 +70,6 @@ export const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 15px;
-
-  label {
-    font-size: 16px;
-    font-weight: 600;
-    color: #0d3b66;
-    margin-bottom: 8px;
-  }
-
-  input {
-    width: 100%;
-    font-size: 18px;
-    font-weight: 600;
-    color: #0d3b66;
-    background-color: transparent;
-    border: none;
-    outline: none;
-  }
-
-  img {
-    cursor: pointer;
-  }
 `
 
 export const Buttons = styled.div`
