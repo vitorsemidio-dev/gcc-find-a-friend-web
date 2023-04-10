@@ -1,13 +1,13 @@
-import chevron from '@/assets/icons/chevron-bottom.svg'
+import { CaretDown } from 'phosphor-react'
 import { ChangeEvent, ComponentProps, forwardRef } from 'react'
 
 import {
+  ErrorMessage,
   Filter,
-  FilterLabel,
   FilterInput,
   FilterInputOption,
+  FilterLabel,
   FilterWrapper,
-  ErrorMessage,
 } from './styles'
 
 type SelectProps = ComponentProps<typeof FilterInput> & {
@@ -37,7 +37,7 @@ export const InputSelect = forwardRef<HTMLSelectElement, SelectProps>(
               )
             })}
           </FilterInput>
-          <img src={chevron} alt="" />
+          <CaretDown size={20} weight="bold" />
         </FilterWrapper>
         {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       </Filter>

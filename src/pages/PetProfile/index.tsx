@@ -1,26 +1,23 @@
-import Leaflet from 'leaflet'
 import { useState } from 'react'
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 import { useParams } from 'react-router-dom'
 
-import alertOutline from '@/assets/icons/alert-outline.svg'
 import boltDuotone from '@/assets/icons/bolt-duotone.svg'
 import boltOutline from '@/assets/icons/bolt-outline.svg'
 import circleDuotone from '@/assets/icons/circle-duotone.svg'
 import circleFill from '@/assets/icons/circle-fill.svg'
 import logoImg from '@/assets/icons/logo.svg'
-import mapMarker from '@/assets/icons/map-marker.svg'
 import maximize from '@/assets/icons/maximize.svg'
 import { energyRecord, sizeRecord } from '@/constant/pet-record'
-import { OPEN_STREET_MAP } from '@/constant/tile-layers'
 import { useCoordinates } from '@/hooks/use-location'
 import {
   usePetDetail,
   usePetGallery,
   usePetRequirements,
 } from '@/hooks/use-pet'
+import { Alert } from '~/Alert'
 import { ButtonWhatsApp } from '~/ButtonWhatsApp'
 import { ChipPhoneNumber } from '~/ChipPhoneNumber'
+import { MapPet } from '~/MapPet'
 import { RateCard } from '~/RateCard'
 import { Sidebar } from '~/Sidebar'
 
@@ -36,7 +33,6 @@ import {
   MapOrgContainer,
   ProfileContainer,
   RequirementList,
-  RequirementListItem,
   SectionContact,
   SectionImages,
   SectionPet,
@@ -47,13 +43,6 @@ import {
 type PetProfileParams = {
   id: string
 }
-
-const MapIcon = Leaflet.icon({
-  iconUrl: mapMarker,
-  iconSize: [64, 72],
-  iconAnchor: [32, 72],
-  popupAnchor: [0, -72],
-})
 
 export function PetProfile() {
   const params = useParams<PetProfileParams>()
@@ -133,27 +122,10 @@ export function PetProfile() {
             </CharacteristicsList>
 
             <MapOrgContainer>
-              {coordinates?.latitude && coordinates?.longitude && (
-                <MapContainer
-                  center={[coordinates?.latitude, coordinates?.longitude]}
-                  zoom={13}
-                  minZoom={11}
-                  scrollWheelZoom={true}
-                >
-                  <TileLayer
-                    attribution={OPEN_STREET_MAP.attribution}
-                    url={OPEN_STREET_MAP.url}
-                  />
-                  <Marker
-                    icon={MapIcon}
-                    position={[coordinates?.latitude, coordinates?.longitude]}
-                  >
-                    <Popup>
-                      {petDetail.org?.nome} - {petDetail.org?.address}
-                    </Popup>
-                  </Marker>
-                </MapContainer>
-              )}
+              <MapPet
+                coordinates={coordinates}
+                popupText={`${petDetail.org?.nome} - ${petDetail.org?.address}`}
+              />
 
               <footer>
                 <a
@@ -186,10 +158,7 @@ export function PetProfile() {
             </header>
             <RequirementList>
               {requirements.map((requirement) => (
-                <RequirementListItem key={requirement.id}>
-                  <img src={alertOutline} alt="" />
-                  {requirement.title}
-                </RequirementListItem>
+                <Alert key={requirement.id} text={requirement.title}></Alert>
               ))}
             </RequirementList>
           </SectionRequirement>

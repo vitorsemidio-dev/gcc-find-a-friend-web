@@ -9,6 +9,7 @@ import { Button } from '~/Button'
 import { Select } from '~/Select'
 
 import {
+  ActionsContainer,
   AsideRight,
   Container,
   Content,
@@ -16,6 +17,8 @@ import {
   Header,
   HeaderText,
   HeroText,
+  LoginButton,
+  RegisterButton,
   Text,
   Wrapper,
 } from './styles'
@@ -50,6 +53,11 @@ export function Home() {
         <Header>
           <img src={logo} alt="" />
           <HeaderText>FindAFriend</HeaderText>
+
+          <ActionsContainer>
+            <LoginButton to="/login">Entrar</LoginButton>
+            <RegisterButton to="/register">Registrar</RegisterButton>
+          </ActionsContainer>
         </Header>
         <Content>
           <HeroText>Leve a felicidade para o seu lar</HeroText>

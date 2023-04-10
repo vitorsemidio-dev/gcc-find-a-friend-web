@@ -132,4 +132,9 @@ export const Button = styled.button`
   border-radius: 20px;
   padding: 19px auto;
   border: none;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 `

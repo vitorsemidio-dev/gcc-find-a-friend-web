@@ -31,6 +31,10 @@ export const InputWrapper = styled.div`
   border-radius: 10px;
   padding: 18px;
 
+  &:focus-within {
+    border: 1px solid ${(props) => props.theme.colors.tertiary};
+  }
+
   input,
   textarea {
     width: 100%;
@@ -61,13 +65,13 @@ export const ErrorMessage = styled.span`
 export const Filter = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
 `
 
 export const FilterLabel = styled.label`
-  font-size: 12px;
-  line-height: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0d3b66;
+  margin-bottom: 8px;
 `
 
 export const FilterWrapper = styled.div`
@@ -77,7 +81,12 @@ export const FilterWrapper = styled.div`
   border: 1px solid #d3e2e5;
   border-radius: 10px;
 
-  & > img {
+  &:focus-within {
+    border: 1px solid ${(props) => props.theme.colors.tertiary};
+  }
+
+  & > img,
+  svg {
     position: absolute;
     right: 18px;
     top: 50%;

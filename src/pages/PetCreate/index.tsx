@@ -1,7 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Gear, Plus } from 'phosphor-react'
-import { useForm } from 'react-hook-form'
+import { useCallback, useState } from 'react'
+import { useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { toast } from 'react-toastify'
 
 import { Alert } from '@/components/Alert'
 import {
@@ -15,7 +17,7 @@ import {
 import { InputSelect, InputText, InputTextArea } from '@/components/Input'
 import { Sidebar } from '@/components/Sidebar'
 
-import { SquashIcon } from '../PetProfile/styles'
+import { SquashIcon } from '@/pages/PetProfile/styles'
 import {
   AddButton,
   AdoptionRequirementList,
@@ -28,6 +30,23 @@ import {
 } from './styles'
 
 import logoImg from '@/assets/icons/logo.svg'
+import { ErrorMessage } from '@/components/Input/styles'
+import { useAuthOrg } from '@/contexts/AuthOrgContext'
+import { api } from '@/services/http'
+
+const typeOptions = [
+  { value: 'dog', label: 'Cachorro' },
+  { value: 'cat', label: 'Gato' },
+]
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5mb
+const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+]
+
 const createPetSchema = z.object({
   name: z.string().min(3).max(100),
   description: z.string().min(3).max(300),
@@ -37,25 +56,83 @@ const createPetSchema = z.object({
   independence: z.string().nonempty(),
   energy: z.string().nonempty(),
   environment: z.string().nonempty(),
+  images: z
+    .instanceof(FileList)
+    .refine((files) => !!files.item(0), 'A imagem de perfil é obrigatória')
+    .refine(
+      (files) => Array.from(files).every((file) => file.size <= MAX_FILE_SIZE),
+      `Tamanho máximo de 5MB`,
+    )
+    .refine(
+      (files) => ACCEPTED_IMAGE_TYPES.includes(files.item(0)!.type),
+      'Formato de imagem inválido',
+    )
+    .transform((files) => {
+      return Array.from(files)
+    }),
+  adoptionRequirements: z
+    .array(
+      z.object({
+        value: z.string().nonempty(),
+      }),
+    )
+    .min(1, 'Pelo menos um requisito de adoção')
+    .max(6, 'Máximo de 6 requisitos de adoção'),
+  type: z.string().nonempty(),
 })
 
 type CreatePetSchema = z.infer<typeof createPetSchema>
 
 export function PetCreate() {
+  const [newAdoptionRequirements, setNewAdoptionRequirements] =
+    useState<string>('')
+  const { org } = useAuthOrg()
   const {
+    control,
+    formState: { errors, isSubmitting },
     register,
     handleSubmit,
-    formState: { errors },
   } = useForm<CreatePetSchema>({
     resolver: zodResolver(createPetSchema),
   })
-  console.log(errors)
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'adoptionRequirements',
+  })
 
-  async function handleCreatePet(createPetSchema: CreatePetSchema) {
+  const handleAddNewAdoptionRequirement = useCallback(
+    (param: string) => {
+      append({ value: param })
+      setNewAdoptionRequirements('')
+    },
+    [append],
+  )
+
+  async function handleCreatePet(createPetForm: CreatePetSchema) {
     try {
-      console.log(createPetSchema)
+      const formData = new FormData()
+      formData.append('name', createPetForm.name)
+      formData.append('age', createPetForm.age)
+      formData.append('size', createPetForm.size)
+      formData.append('description', createPetForm.description)
+      formData.append('energy', createPetForm.energy)
+      formData.append('independence', createPetForm.independence)
+      formData.append('type', createPetForm.type)
+      formData.append(
+        'adoptionRequirements',
+        JSON.stringify(
+          createPetForm.adoptionRequirements.map((item) => item.value),
+        ),
+      )
+      // formData.append('environment', createPetForm.environment)
+      createPetForm.images.forEach((image) => {
+        formData.append('images', image!)
+      })
+
+      await api.post('/pets', formData)
+      toast.success('Pet cadastrado com sucesso!')
     } catch (err) {
-      console.log(err)
+      toast.error('Erro ao cadastrar pet')
     }
   }
 
@@ -67,8 +144,8 @@ export function PetCreate() {
           <img src={logoImg} alt="Face cachorro" />
         </SquashIcon>
         <div>
-          <h2>Nome Org</h2>
-          <p>Endereço org</p>
+          <h2>{org?.nome}</h2>
+          <p>{org?.address}</p>
         </div>
         <button>
           <Gear size={24} weight="bold" />
@@ -91,20 +168,20 @@ export function PetCreate() {
             {...register('description')}
           />
           <InputSelect
+            label="Animal"
+            options={typeOptions}
+            errorMessage={errors.type?.message}
+            {...register('type')}
+          />
+          <InputSelect
             label="Idade"
             options={ageOptions}
-            // onChange={(e: any) => {
-            //   console.log(e)
-            // }}
             errorMessage={errors.age?.message}
             {...register('age')}
           />
           <InputSelect
             label="Porte do animal"
             options={sizeOptions}
-            // onChange={(e: any) => {
-            //   console.log(e)
-            // }}
             errorMessage={errors.size?.message}
             {...register('size')}
           />
@@ -117,35 +194,35 @@ export function PetCreate() {
           <InputSelect
             label="Nível de independência"
             options={independenceOptions}
-            // onChange={(e: any) => {
-            //   console.log(e)
-            // }}
             errorMessage={errors.independence?.message}
             {...register('independence')}
           />
           <InputSelect
             label="Nível de energia"
             options={energyOptions}
-            // onChange={(e: any) => {
-            //   console.log(e)
-            // }}
             errorMessage={errors.energy?.message}
             {...register('energy')}
           />
           <InputSelect
             label="Ambiente"
             options={environmentsOptions}
-            // onChange={(e: any) => {
-            //   console.log(e)
-            // }}
             errorMessage={errors.environment?.message}
             {...register('environment')}
           />
           <div>
-            <InputText label="Fotos" />
+            <InputText
+              label="Fotos"
+              type="file"
+              accept="image/*"
+              multiple
+              {...register('images')}
+            />
             <AddButton>
               <Plus size={20} />
             </AddButton>
+            {errors.images?.message && (
+              <ErrorMessage>{errors.images?.message}</ErrorMessage>
+            )}
           </div>
 
           <FieldsetContainer>
@@ -153,8 +230,17 @@ export function PetCreate() {
               <h2>Requesitos para adoção</h2>
             </legend>
             <div>
-              <InputText label="Requisito" />
-              <AddButton>
+              <InputText
+                label="Requisito"
+                value={newAdoptionRequirements}
+                onChange={(e) => setNewAdoptionRequirements(e.target.value)}
+              />
+              <AddButton
+                type="button"
+                onClick={() =>
+                  handleAddNewAdoptionRequirement(newAdoptionRequirements)
+                }
+              >
                 <Plus size={20} />
               </AddButton>
             </div>
@@ -162,13 +248,28 @@ export function PetCreate() {
             {/* Requirement list */}
             <div>
               <AdoptionRequirementList>
-                <Alert text="Requisito 1" showCloseButton></Alert>
-                <Alert text="Requisito 2"></Alert>
+                {fields.map((field, index) => {
+                  return (
+                    <Alert
+                      key={field.id}
+                      text={field.value}
+                      showCloseButton
+                      onClose={() => remove(index)}
+                    />
+                  )
+                })}
               </AdoptionRequirementList>
+              {errors.adoptionRequirements?.message && (
+                <ErrorMessage>
+                  {errors.adoptionRequirements?.message}
+                </ErrorMessage>
+              )}
             </div>
           </FieldsetContainer>
 
-          <Button type="submit">Confirmar</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            Confirmar
+          </Button>
         </FormContainer>
       </PetCreateContainer>
     </Container>

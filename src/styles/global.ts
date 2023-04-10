@@ -43,6 +43,36 @@ export default createGlobalStyle`
     font: 400 16px 'Nunito', sans-serif;
   }
 
+  ::-webkit-scrollbar {
+    width: 10px;
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: ${theme.colors.primary};
+    border-radius: 5px;
+  }
+
+
+  ::-moz-scrollbar {
+    width: 10px;
+    border-radius: 5px;
+  }
+
+  ::-moz-scrollbar-track {
+    background-color: transparent;
+  }
+
+  ::-moz-scrollbar-thumb {
+    background-color: ${theme.colors.primary};
+    border-radius: 5px;
+  }
+
+
   @media (max-width: 1080px) {
     html {
       font-size: 93.75%;
