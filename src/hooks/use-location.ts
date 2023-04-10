@@ -34,7 +34,7 @@ export function useCoordinates(cep?: string) {
   const [coordinates, setCoordinates] = useState<Coordinates>({} as Coordinates)
 
   const getCoordinatesByCep = useCallback(async () => {
-    if (!cep) return
+    if (!cep || cep.length < 8) return
     const { data } = await api.get<{
       coordinates: { latitude: string; longitude: string }
     }>(`/location/coordinates/${cep}`)

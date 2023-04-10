@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Gear, Plus } from 'phosphor-react'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { toast } from 'react-toastify'
+import { z } from 'zod'
 
 import { Alert } from '@/components/Alert'
 import {
@@ -13,7 +13,8 @@ import {
   genderOptions,
   independenceOptions,
   sizeOptions,
-} from '@/components/Aside'
+  typeOptions,
+} from '@/constant/pet-record'
 import { InputSelect, InputText, InputTextArea } from '@/components/Input'
 import { Sidebar } from '@/components/Sidebar'
 
@@ -26,18 +27,16 @@ import {
   FieldsetContainer,
   FormContainer,
   Header,
+  ImageList,
+  ImageListItem,
   PetCreateContainer,
 } from './styles'
 
 import logoImg from '@/assets/icons/logo.svg'
+import { InputFile } from '@/components/Input/InputFile'
 import { ErrorMessage } from '@/components/Input/styles'
 import { useAuthOrg } from '@/contexts/AuthOrgContext'
 import { api } from '@/services/http'
-
-const typeOptions = [
-  { value: 'dog', label: 'Cachorro' },
-  { value: 'cat', label: 'Gato' },
-]
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5mb
 const ACCEPTED_IMAGE_TYPES = [
@@ -64,7 +63,10 @@ const createPetSchema = z.object({
       `Tamanho máximo de 5MB`,
     )
     .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files.item(0)!.type),
+      (files) =>
+        Array.from(files).every((file) =>
+          ACCEPTED_IMAGE_TYPES.includes(file.type),
+        ),
       'Formato de imagem inválido',
     )
     .transform((files) => {
@@ -83,6 +85,24 @@ const createPetSchema = z.object({
 
 type CreatePetSchema = z.infer<typeof createPetSchema>
 
+function usePreviewImages(files: FileList | File[]) {
+  const [previewImages, setPreviewImages] = useState<string[]>([])
+
+  const resetPreviewImages = useCallback(() => {
+    setPreviewImages([])
+  }, [])
+
+  useEffect(() => {
+    if (!files) return
+    const previewImages = Array.from(files).map((file) =>
+      URL.createObjectURL(file),
+    )
+    setPreviewImages(previewImages)
+  }, [files])
+
+  return { previewImages, resetPreviewImages }
+}
+
 export function PetCreate() {
   const [newAdoptionRequirements, setNewAdoptionRequirements] =
     useState<string>('')
@@ -90,8 +110,10 @@ export function PetCreate() {
   const {
     control,
     formState: { errors, isSubmitting },
-    register,
     handleSubmit,
+    register,
+    reset,
+    watch,
   } = useForm<CreatePetSchema>({
     resolver: zodResolver(createPetSchema),
   })
@@ -99,6 +121,9 @@ export function PetCreate() {
     control,
     name: 'adoptionRequirements',
   })
+  const { previewImages, resetPreviewImages } = usePreviewImages(
+    watch('images'),
+  )
 
   const handleAddNewAdoptionRequirement = useCallback(
     (param: string) => {
@@ -131,9 +156,16 @@ export function PetCreate() {
 
       await api.post('/pets', formData)
       toast.success('Pet cadastrado com sucesso!')
+      resetForm()
     } catch (err) {
       toast.error('Erro ao cadastrar pet')
     }
+  }
+
+  function resetForm() {
+    reset()
+    resetPreviewImages()
+    fields.forEach((_, index) => remove(index))
   }
 
   return (
@@ -210,19 +242,23 @@ export function PetCreate() {
             {...register('environment')}
           />
           <div>
-            <InputText
+            <InputFile
               label="Fotos"
               type="file"
               accept="image/*"
               multiple
+              errorMessage={errors.images?.message}
               {...register('images')}
             />
-            <AddButton>
-              <Plus size={20} />
-            </AddButton>
-            {errors.images?.message && (
-              <ErrorMessage>{errors.images?.message}</ErrorMessage>
-            )}
+            <ImageList>
+              {previewImages.map((image) => {
+                return (
+                  <ImageListItem key={image}>
+                    <img src={image} alt={`${image}`} />
+                  </ImageListItem>
+                )
+              })}
+            </ImageList>
           </div>
 
           <FieldsetContainer>

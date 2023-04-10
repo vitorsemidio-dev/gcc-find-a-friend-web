@@ -107,11 +107,31 @@ export const AdoptionRequirementListItem = styled.li`
     padding: 12px 20px;
   }
 `
+export const ImageList = styled.ul`
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 1rem;
+`
+
+export const ImageListItem = styled.li`
+  list-style: none;
+  border-radius: 15px;
+  overflow: hidden;
+
+  img {
+    max-width: 100%;
+    object-fit: cover;
+    object-position: center;
+    aspect-ratio: 1/1;
+  }
+`
+
 export const AddButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0.875rem 0;
+  margin: 0.875rem 0 0;
   background-color: ${({ theme }) => hexToRgb(theme.colors.danger, 0.1)};
   color: ${({ theme }) => theme.colors.danger};
   border: 1px dashed ${({ theme }) => theme.colors.danger};
@@ -119,6 +139,7 @@ export const AddButton = styled.button`
   width: 100%;
   height: 4rem;
   font-weight: 500;
+  cursor: pointer;
 `
 export const Button = styled.button`
   width: 100%;
