@@ -8,7 +8,17 @@ Não hesite em usar nossos filtros de pesquisa para encontrar um animal de estim
 
 ## 🖥️ Preview
 
+### 🔍 Pesquisa de Pets
+
 https://user-images.githubusercontent.com/52754546/226121575-e5bdada3-697e-4689-96cf-8ded43908f00.mp4
+
+### 🏢 Cadastro de Organização
+
+https://user-images.githubusercontent.com/52754546/231022167-b629590c-8218-4fb8-9f17-1568aead7fbf.mp4
+
+### 🐶 Cadastro de Pets
+
+https://user-images.githubusercontent.com/52754546/231022203-98a5e862-61bf-4de7-b3e1-b304790bcf45.mp4
 
 ## 🧭 Como rodar o projeto
 
