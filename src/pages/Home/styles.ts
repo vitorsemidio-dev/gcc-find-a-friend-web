@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 
 export const Container = styled.div`
@@ -24,6 +25,52 @@ export const Header = styled.header`
   display: flex;
   align-items: center;
   gap: 12px;
+`
+
+export const ActionsContainer = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
+`
+
+export const LoginButton = styled(Link)`
+  background-color: transparent;
+  color: ${(props) => props.theme.colors.tertiary};
+  border: 2px solid ${(props) => props.theme.colors.tertiary};
+  padding: 12px 24px;
+  font-weight: bold;
+  font-size: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 20px;
+  transition: filter 0.2s;
+
+  :hover {
+    filter: brightness(0.9);
+  }
+`
+
+export const RegisterButton = styled(Link)`
+  background-color: ${(props) => props.theme.colors.tertiary};
+  color: ${(props) => props.theme.colors.secondary};
+  border: 2px solid ${(props) => props.theme.colors.tertiary};
+  padding: 12px 24px;
+  font-weight: bold;
+  font-size: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 20px;
+  transition: filter 0.2s;
+
+  :hover {
+    filter: brightness(0.9);
+  }
 `
 
 export const HeaderText = styled.strong`

@@ -1,12 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { z } from 'zod'
 
 import LogoHorizontal from '@/assets/icons/logo-horizontal.svg'
 import Pets from '@/assets/icons/pets.svg'
+import { useAuthOrg } from '@/contexts/AuthOrgContext'
 import { useCoordinates } from '@/hooks/use-location'
-import { api } from '@/services/http'
 import { cepRegex } from '@/utils/regex'
 import { InputText, InputTextPassword } from '~/Input'
 import { MapPet } from '~/MapPet'
@@ -21,19 +22,30 @@ import {
   Wrapper,
 } from './styles'
 
-const registerSchema = z.object({
-  name: z.string().min(3).max(50),
-  email: z.string().email(),
-  address: z.string().min(3).max(50),
-  cep: z.string().regex(cepRegex).min(8).max(9),
-  whatsappNumber: z.string().min(14).max(14),
-  password: z.string().min(6).max(50),
-  passwordConfirm: z.string().min(6).max(50),
-})
+const registerSchema = z
+  .object({
+    name: z.string().min(3).max(50),
+    email: z.string().email(),
+    address: z.string().min(3).max(50),
+    cep: z.string().regex(cepRegex).min(8).max(9),
+    whatsappNumber: z.string(),
+    password: z.string().min(6).max(50),
+    passwordConfirm: z.string().min(6).max(50),
+  })
+  .superRefine(({ password, passwordConfirm }) => {
+    if (password !== passwordConfirm) {
+      return {
+        path: ['passwordConfirm'],
+        message: 'As senhas não são iguais',
+      }
+    }
+    return true
+  })
 
 type RegisterForm = z.infer<typeof registerSchema>
 
 export function Register() {
+  const { signUp } = useAuthOrg()
   const {
     formState: { errors },
     handleSubmit,
@@ -47,12 +59,14 @@ export function Register() {
   const navigate = useNavigate()
 
   async function handleRegisterOrganization(form: RegisterForm) {
-    if (!form) return
     try {
-      await api.post('/orgs', form)
+      await signUp(form)
+      toast.success('Organização cadastrada com sucesso')
       handleLoginOrganization()
-    } catch (err) {
-      console.log(err)
+    } catch (error: any) {
+      toast.error(
+        `Erro ao cadastrar organização. ${error?.response?.data.error}`,
+      )
     }
   }
 
@@ -105,7 +119,7 @@ export function Register() {
 
             <InputText
               label="Whatsapp"
-              placeholder="99 99999 9999"
+              placeholder="+55 99 98765 4321"
               errorMessage={errors.whatsappNumber?.message}
               {...register('whatsappNumber')}
             />

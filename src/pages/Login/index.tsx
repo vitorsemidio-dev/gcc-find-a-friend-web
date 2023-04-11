@@ -2,12 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
+import { toast } from 'react-toastify'
 
 import LogoHorizontal from '@/assets/icons/logo-horizontal.svg'
 import Pets from '@/assets/icons/pets.svg'
 import { InputText } from '@/components/Input/InputText'
 import { InputTextPassword } from '@/components/Input/InputTextPassword'
-import { api } from '@/services/http'
+import { useAuthOrg } from '@/contexts/AuthOrgContext'
 
 import {
   Button,
@@ -27,6 +28,7 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>
 
 export function Login() {
+  const { signIn } = useAuthOrg()
   const {
     formState: { errors },
     handleSubmit,
@@ -39,9 +41,11 @@ export function Login() {
 
   async function handleLogin(loginForm: LoginForm) {
     try {
-      await api.post('/auth/sessions', loginForm)
+      await signIn(loginForm)
+      toast.success('Login realizado com sucesso')
+      navigate('/pet-create')
     } catch (err) {
-      console.log(err)
+      toast.error('Erro ao fazer login')
     }
   }
 

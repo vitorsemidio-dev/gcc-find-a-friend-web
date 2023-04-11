@@ -7,7 +7,6 @@ import {
   SelectOptions,
 } from '@/models/location'
 import { api } from '@/services/http'
-import { cepRegex } from '@/utils/regex'
 
 export function useCitys(state?: string) {
   const [citys, setCitys] = useState<SelectOptions[]>([])
@@ -35,7 +34,7 @@ export function useCoordinates(cep?: string) {
   const [coordinates, setCoordinates] = useState<Coordinates>({} as Coordinates)
 
   const getCoordinatesByCep = useCallback(async () => {
-    if (!cep || !cepRegex.test(cep)) return
+    if (!cep || cep.length < 8) return
     const { data } = await api.get<{
       coordinates: { latitude: string; longitude: string }
     }>(`/location/coordinates/${cep}`)
